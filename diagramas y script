@@ -1,0 +1,84 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+-- -----------------------------------------------------
+-- Schema notas de texto
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema notas de texto
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `notas de texto` DEFAULT CHARACTER SET utf8 ;
+USE `notas de texto` ;
+
+-- -----------------------------------------------------
+-- Table `notas de texto`.`usuarios`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `notas de texto`.`usuarios` (
+  `id` INT NOT NULL,
+  `nombre` VARCHAR(45) NOT NULL,
+  `email` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `notas de texto`.`categorías`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `notas de texto`.`categorías` (
+  `id` INT NOT NULL,
+  `nombre` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `notas de texto`.`notas`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `notas de texto`.`notas` (
+  `id` INT NOT NULL,
+  `título` VARCHAR(100) NOT NULL,
+  `fecha_creación` DATETIME NOT NULL,
+  `modificación` DATETIME NOT NULL,
+  `descripción` VARCHAR(45) NOT NULL,
+  `usuarioId` INT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `FK_notas_usuarios_idx` (`usuarioId` ASC) VISIBLE,
+  CONSTRAINT `FK_notas_usuarios`
+    FOREIGN KEY (`usuarioId`)
+    REFERENCES `notas de texto`.`usuarios` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `notas de texto`.`categoria_notas`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `notas de texto`.`categoria_notas` (
+  `id` INT NOT NULL,
+  `categoriaId` INT NULL,
+  `notaId` INT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `FK_categorias_notas_idx` (`notaId` ASC) VISIBLE,
+  INDEX `FK_notas_categorias_idx` (`categoriaId` ASC) VISIBLE,
+  CONSTRAINT `FK_categorias_notas`
+    FOREIGN KEY (`notaId`)
+    REFERENCES `notas de texto`.`notas` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_notas_categorias`
+    FOREIGN KEY (`categoriaId`)
+    REFERENCES `notas de texto`.`categorías` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
